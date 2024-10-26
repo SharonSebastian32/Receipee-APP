@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipe Explorer</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #ff7700;
+        --secondary-color: #fed800;
+        --background-color: #f8faf8;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        background-color: var(--background-color);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin: 0;
+      }
+
+      .filters-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem;
+      }
+
+      .recipe-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s;
+        margin-bottom: 1.5rem;
+      }
+
+      .recipe-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .recipe-image {
+        border-radius: 10px;
+        overflow: hidden;
+        height: 200px;
+      }
+
+      .recipe-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .recipe-details {
+        padding: 1.5rem;
+      }
+
+      .rating-stars {
+        color: #ffd700;
+      }
+
+      .btn-view-recipe {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        transition: background-color 0.2s;
+      }
+
+      .btn-view-recipe:hover {
+        background-color: darken(var(--primary-color), 10%);
+        color: white;
+      }
+
+      .icon-hover {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+      }
+
+      .icon-hover:hover {
+        background-color: #f8f9fa;
+      }
+
+      .search-input {
+        border-radius: 25px;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid #ddd;
+      }
+
+      .select-input {
+        border-radius: 25px;
+        height: calc(1.5em + 1.5rem);
+      }
+
+      #recipesContainer {
+        height: 80vh;
+        overflow-y: auto;
+        padding: 0 1rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-color) #f1f1f1;
+      }
+
+      #recipesContainer::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      #recipesContainer::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      #recipesContainer::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 4px;
+      }
+
+      #recipesContainer::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary-color);
+      }
+
+      .ingredients-list {
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .cooking-info {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 1rem;
+      }
+
+      .cooking-info i {
+        color: var(--primary -color);
+      }
+
+      .container {
+        padding-bottom: 0;
+      }
+
+      .nav-link {
+        color: #333;
+        transition: color 0.2s;
+      }
+
+      .nav-link:hover {
+        color: var(--primary-color);
+      }
+
+      .footer {
+        background-color: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Recipe Explorer</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#"
+                >Home <span class="sr-only">(current)</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="header">
+      <div class="container">
+        <h1 class="text-center">Recipe Explorer</h1>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="filters-container">
+        <div class="row">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <input
+              type="text"
+              id="searchInput"
+              class="form-control search-input"
+              placeholder="Search recipes..."
+            />
+          </div>
+          <div class="col-md-3 mb-3 mb-md-0">
+            <select id="cuisineFilter" class="form-control select-input">
+              <option value="">All Cuisines</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <input
+              type="number"
+              id="cookTimeInput"
+              class="form-control search-input"
+              placeholder="Max Cook Time (min)"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div id="recipesContainer">
+        <!-- Recipe cards will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2023 Recipe Explorer. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      // JavaScript remains the same as in the previous version
+      async function fetchData() {
+        try {
+          const url = "https://dummyjson.com/recipes";
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("Network response was not ok");
+          const data = await response.json();
+
+          localStorage.setItem("jsonData", JSON.stringify(data));
+          displayRecipes(data.recipes);
+          populateFilters(data.recipes);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+
+      function populateFilters(recipes) {
+        const cuisines = [...new Set(recipes.map((recipe) => recipe.cuisine))];
+        const cuisineSelect = document.getElementById("cuisineFilter");
+        cuisines.forEach((cuisine) => {
+          cuisineSelect.innerHTML += `<option value="${cuisine}">${cuisine}</option>`;
+        });
+      }
+
+      function displayRecipes(recipes) {
+        const recipesContainer = document.getElementById("recipesContainer");
+        recipesContainer.innerHTML = "";
+
+        recipes.forEach((recipe) => {
+          const recipeCard = `
+                    <div class="recipe-card">
+                        <div class="row no-gutters">
+                            <div class="col-md-3">
+                                <div class="recipe-image">
+                                    <img src="${recipe.image}" alt="${
+            recipe.name
+          }">
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="recipe-details">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h4>${recipe.name}</h4>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="rating-stars me-2">
+                                                    ${'<i class="fa fa-star"></i>'.repeat(
+                                                      Math.floor(recipe.rating)
+                                                    )}
+                                                    ${
+                                                      recipe.rating % 1 !== 0
+                                                        ? '<i class="fas fa-star-half-alt"></i>'
+                                                        : ""
+                                                    }
+                                                </div>
+                                                <span class="text-muted">(${
+                                                  recipe.reviewCount
+                                                } reviews)</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-view-recipe">View Recipe</button>
+                                    </div>
+                                    
+                                    <div class="ingredients-list">
+                                        <strong>Ingredients:</strong> ${recipe.ingredients.join(
+                                          ", "
+                                        )}
+                                    </div>
+                                    
+                                    <div class="cooking-info">
+                                        <span><i class="fas fa-clock"></i> ${
+                                          recipe.cookTimeMinutes
+                                        } mins</span>
+                                        <span><i class="fas fa-user-friends"></i> ${
+                                          recipe.servings
+                                        } servings</span>
+                                        <span><i class="fas fa-fire"></i> ${
+                                          recipe.caloriesPerServing
+                                        } cal/serving</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          recipesContainer.innerHTML += recipeCard;
+        });
+      }
+
+      function filterRecipes() {
+        const searchInput = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const cuisineFilter = document.getElementById("cuisineFilter").value;
+        const cookTimeInput = document.getElementById("cookTimeInput").value;
+
+        const allRecipes = JSON.parse(localStorage.getItem("jsonData")).recipes;
+        const filteredRecipes = allRecipes.filter((recipe) => {
+          const matchesSearch = recipe.name.toLowerCase().includes(searchInput);
+          const matchesCuisine = cuisineFilter
+            ? recipe.cuisine === cuisineFilter
+            : true;
+          const matchesCookTime = cookTimeInput
+            ? recipe.cookTimeMinutes <= parseInt(cookTimeInput)
+            : true;
+          return matchesSearch && matchesCuisine && matchesCookTime;
+        });
+
+        displayRecipes(filteredRecipes);
+      }
+
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", filterRecipes);
+      document
+        .getElementById("cuisineFilter")
+        .addEventListener("change", filterRecipes);
+      document
+        .getElementById("cookTimeInput")
+        .addEventListener("input", filterRecipes);
+
+      window.onload = fetchData;
+    </script>
+  </body>
+</html>
